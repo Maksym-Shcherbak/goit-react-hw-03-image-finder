@@ -1,0 +1,38 @@
+.contactList__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.contactList__item::before {
+  content: '•';
+  color: red;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+.contactName {
+  text-transform: capitalize;
+}
+
+.contactList__button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 8px;
+  margin-left: auto;
+  border-radius: 5px;
+  background-color: rgb(73, 160, 157);
+  font-size: 14px;
+  border: none;
+  transition: background-color 500ms cubic-bezier(0.46, 0.03, 0.52, 0.96),
+    color 500ms cubic-bezier(0.46, 0.03, 0.52, 0.96);
+}
+
+.contactList__button:hover,
+.contactList__button:focus {
+  background-color: rgb(95, 44, 130);
+  color: white;
+}
