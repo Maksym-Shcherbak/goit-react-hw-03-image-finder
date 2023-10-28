@@ -3,36 +3,53 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-
-axios.defaults.baseURL = 'https://pixabay.com/api/';
-const KEY = '39344710-74bbb124ce1c1439ca3e67f9f';
-const options = {
-  page: 1,
-  per_page: 12,
-  image_type: 'photo',
-  orientation: 'horizontal',
-};
-const searchParams = new URLSearchParams(options);
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
     images: [],
     query: '',
+    showModal: false,
+    largeImgURL: null,
   };
 
-  async componentDidMount() {
-    const response = await axios.get(`?q=cat&key=${KEY}&${searchParams}`);
-    console.log(response);
-    this.setState({ images: response.data.hits });
-  }
+  saveQuery = query => {
+    this.setState({ query });
+  };
+
+  toggleModal = e => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+    this.setState({ largeImgURL: e.target.dataset.source });
+  };
+  // async componentDidMount() {
+  //   const response = await axios.get(`?q=cat&key=${KEY}&${searchParams}`);
+  //   console.log(response);
+  //   this.setState({ images: response.data.hits });
+  // }
+
+  // async componentDidUpdate(prevProps, prevState) {
+  //   const response = await axios.get(
+  //     `?q=${this.state.query}&key=${KEY}&${searchParams}`
+  //   );
+  //   console.log(response);
+  //   this.setState({ images: response.data.hits });
+  // }
 
   render() {
     return (
       <div className="container">
-        <Searchbar />
-        {this.state.images.length > 0 ? (
-          <ImageGallery images={this.state.images} />
-        ) : null}
+        <Searchbar onGetImages={this.saveQuery} />
+
+        <ImageGallery
+          saveQuery={this.state.query}
+          toggleModal={this.toggleModal}
+        />
+        {this.state.showModal && (
+          <Modal
+            largeImage={this.largeImgURL}
+            onCloseModal={this.toggleModal}
+          />
+        )}
       </div>
     );
   }

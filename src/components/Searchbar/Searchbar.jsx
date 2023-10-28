@@ -7,9 +7,13 @@ export class Searchbar extends Component {
 
   onHandleSubmit = e => {
     e.preventDefault();
-    this.props.onAddContact({ ...this.state });
+    if (this.state.searchQuery.trim() === '') {
+      alert('Enter query');
+      return;
+    }
+    this.props.onGetImages(this.state.searchQuery);
     this.setState({ searchQuery: '' });
-    const form = e.currentTarget;
+    const form = e.target;
     form.reset();
   };
 
@@ -20,14 +24,14 @@ export class Searchbar extends Component {
 
   render() {
     return (
-      <header className="searchbar" onSubmit={this.onHandleSubmit}>
-        <form className="form">
-          <button type="submit" className="button">
+      <header className="Searchbar" onSubmit={this.onHandleSubmit}>
+        <form className="SearchForm">
+          <button type="submit" className="SearchForm-button">
             <span className="button-label">Search</span>
           </button>
 
           <input
-            className="input"
+            className="SearchForm-input"
             type="text"
             autoComplete="off"
             autoFocus
