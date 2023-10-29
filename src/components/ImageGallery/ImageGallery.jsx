@@ -2,9 +2,9 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Gallery } from './ImageGallery.styled';
 import { toast } from 'react-toastify';
-import { ColorRing } from 'react-loader-spinner';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
+import { Loader } from 'components/Loader/Loader';
 import { getImages } from 'helpers/PixabayAPI';
 
 export class ImageGallery extends Component {
@@ -20,7 +20,9 @@ export class ImageGallery extends Component {
     if (prevProps.saveQuery !== this.props.saveQuery) {
       try {
         this.setState({
+          images: [],
           isLoading: true,
+          isLoadMore: false,
           page: 1,
         });
         const response = await getImages(this.props.saveQuery, 1);
@@ -45,7 +47,9 @@ export class ImageGallery extends Component {
 
   loadMore = async () => {
     try {
-      this.setState({ isLoading: true });
+      this.setState({
+        isLoading: true,
+      });
       const response = await getImages(this.props.saveQuery, this.state.page);
       this.setState(({ images, page }) => {
         return {
@@ -70,17 +74,6 @@ export class ImageGallery extends Component {
     return (
       <>
         {error && toast.error(`${error.message}`)}
-        {isLoading && (
-          <ColorRing
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="blocks-loading"
-            wrapperStyle={{}}
-            wrapperClass="blocks-wrapper"
-            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-          />
-        )}
         {images.length > 0 ? (
           <Gallery>
             {images.map(({ id, webformatURL, largeImageURL, tags }) => {
@@ -96,7 +89,8 @@ export class ImageGallery extends Component {
             })}
           </Gallery>
         ) : null}
-        {isLoadMore && <Button onButtonClick={this.loadMore} />}
+        {isLoading && <Loader />}
+        {!isLoading && isLoadMore && <Button onButtonClick={this.loadMore} />}
       </>
     );
   }
