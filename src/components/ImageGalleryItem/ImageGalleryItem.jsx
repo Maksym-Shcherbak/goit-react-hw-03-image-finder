@@ -1,13 +1,22 @@
+import { GalleryItem, ItemImage } from './ImageGalleryItem.styled';
+import PropTypes from 'prop-types';
+
 export const ImageGalleryItem = ({ largeImg, smallImg, showModal, tags }) => {
   return (
-    <li className="ImageGalleryItem">
-      <img
+    <GalleryItem>
+      <ItemImage
         src={smallImg}
         alt={tags}
         data-source={largeImg}
-        className="ImageGalleryItem-image"
         onClick={showModal}
       />
-    </li>
+    </GalleryItem>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  largeImg: PropTypes.string,
+  smallImg: PropTypes.string,
+  showModal: PropTypes.func.isRequired,
+  tags: PropTypes.string,
 };

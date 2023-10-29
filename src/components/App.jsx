@@ -1,16 +1,15 @@
 import { Component } from 'react';
-import axios from 'axios';
-import { nanoid } from 'nanoid';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
-    images: [],
     query: '',
     showModal: false,
-    largeImgURL: null,
+    modalImage: null,
   };
 
   saveQuery = query => {
@@ -18,38 +17,25 @@ export class App extends Component {
   };
 
   toggleModal = e => {
+    if (!this.state.showModal) {
+      this.setState({ modalImage: e.target.dataset.source });
+    }
     this.setState(({ showModal }) => ({ showModal: !showModal }));
-    this.setState({ largeImgURL: e.target.dataset.source });
   };
-  // async componentDidMount() {
-  //   const response = await axios.get(`?q=cat&key=${KEY}&${searchParams}`);
-  //   console.log(response);
-  //   this.setState({ images: response.data.hits });
-  // }
-
-  // async componentDidUpdate(prevProps, prevState) {
-  //   const response = await axios.get(
-  //     `?q=${this.state.query}&key=${KEY}&${searchParams}`
-  //   );
-  //   console.log(response);
-  //   this.setState({ images: response.data.hits });
-  // }
 
   render() {
+    const { query, showModal, modalImage } = this.state;
     return (
       <div className="container">
         <Searchbar onGetImages={this.saveQuery} />
 
-        <ImageGallery
-          saveQuery={this.state.query}
-          toggleModal={this.toggleModal}
-        />
-        {this.state.showModal && (
-          <Modal
-            largeImage={this.largeImgURL}
-            onCloseModal={this.toggleModal}
-          />
+        <ImageGallery saveQuery={query} openModal={this.toggleModal} />
+        {showModal && (
+          <Modal onCloseModal={this.toggleModal}>
+            <img src={modalImage} alt="large image" />
+          </Modal>
         )}
+        <ToastContainer autoClose={4000} />
       </div>
     );
   }

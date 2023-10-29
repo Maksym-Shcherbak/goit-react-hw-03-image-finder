@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Overlay, ModalContent } from './Modal.styled';
 
 export class Modal extends Component {
   componentDidMount() {
@@ -22,14 +24,17 @@ export class Modal extends Component {
   };
 
   render() {
-    const { largeImage, tags } = this.props;
+    const { children } = this.props;
 
     return (
-      <div className="Overlay" onClick={this.onBackdropClick}>
-        <div className="Modal">
-          <img src={largeImage} alt={tags} />
-        </div>
-      </div>
+      <Overlay onClick={this.onBackdropClick}>
+        <ModalContent>{children}</ModalContent>
+      </Overlay>
     );
   }
 }
+
+Modal.propTypes = {
+  children: PropTypes.element.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+};
