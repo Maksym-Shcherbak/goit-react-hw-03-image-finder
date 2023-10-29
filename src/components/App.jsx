@@ -32,7 +32,7 @@ export class App extends Component {
         <ImageGallery saveQuery={query} openModal={this.toggleModal} />
         {showModal && (
           <Modal onCloseModal={this.toggleModal}>
-            <img src={modalImage} alt="modal image" />
+            <img src={modalImage} alt="large" />
           </Modal>
         )}
         <ToastContainer autoClose={4000} />
