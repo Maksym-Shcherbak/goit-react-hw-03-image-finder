@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Gallery } from './ImageGallery.styled';
 import { ToastContainer, toast } from 'react-toastify';
 import { ColorRing } from 'react-loader-spinner';
@@ -100,3 +101,8 @@ export class ImageGallery extends Component {
     );
   }
 }
+
+ImageGallery.propTypes = {
+  openModal: PropTypes.func.isRequired,
+  saveQuery: PropTypes.string.isRequired,
+};
