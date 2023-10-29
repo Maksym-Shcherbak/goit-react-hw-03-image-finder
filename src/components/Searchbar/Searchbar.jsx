@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { SearchBarHeader } from './SearchBar.styled';
 import { SearchForm } from 'components/SearchForm/SearchForm';
 
