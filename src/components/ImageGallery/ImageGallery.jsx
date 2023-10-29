@@ -18,12 +18,15 @@ export class ImageGallery extends Component {
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps.saveQuery !== this.props.saveQuery) {
       try {
-        this.setState({ isLoading: true });
-        const response = await getImages(this.props.saveQuery, this.state.page);
-        console.log(response);
+        this.setState({
+          isLoading: true,
+          page: 1,
+        });
+        const response = await getImages(this.props.saveQuery, 1);
         if (response.data.total === 0) {
           return toast.error('Nothing found for your request');
         }
+        toast.info(`Hooray. We found ${response.data.totalHits} images`);
         const totalPages = response.data.totalHits / response.data.hits.length;
         if (totalPages > 1) {
           this.setState(({ page }) => {
@@ -52,6 +55,7 @@ export class ImageGallery extends Component {
       const loadedImages = this.state.images.length + response.data.hits.length;
       if (loadedImages >= response.data.totalHits) {
         this.setState({ isLoadMore: false });
+        toast.info('You viewed all pictures');
       }
     } catch (error) {
       this.setState({ error });
