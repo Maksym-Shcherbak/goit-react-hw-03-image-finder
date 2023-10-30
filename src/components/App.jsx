@@ -21,49 +21,43 @@ export class App extends Component {
   };
 
   async componentDidUpdate(_, prevState) {
-    const { query } = this.state;
+    const { query, page } = this.state;
     if (prevState.query !== query) {
-      try {
-        this.setState({
-          images: [],
-          isLoading: true,
-          isLoadMore: false,
-          page: 1,
-        });
-        const response = await getImages(query, 1);
-        if (response.data.total === 0) {
-          return toast.error('Nothing found for your request');
-        }
-        toast.info(`Hooray. We found ${response.data.totalHits} images`);
-        const totalPages = response.data.totalHits / response.data.hits.length;
-        if (totalPages > 1) {
-          this.setState(({ page }) => {
-            return { isLoadMore: true, page: page + 1 };
-          });
-        }
-        this.setState({ images: response.data.hits });
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({ isLoading: false });
-      }
+      this.setState({
+        images: [],
+        isLoadMore: false,
+        page: 1,
+      });
+      this.fetchImages(query, page);
+    } else if (prevState.page !== page) {
+      this.fetchImages(query, page);
     }
   }
 
-  loadMore = async () => {
-    const { query, images, page } = this.state;
+  fetchImages = async (query, page) => {
     try {
       this.setState({
         isLoading: true,
       });
       const response = await getImages(query, page);
-      this.setState(({ images, page }) => {
+      if (response.data.total === 0) {
+        return toast.error('Nothing found for your request');
+      }
+      if (page === 1) {
+        toast.info(`Hooray. We found ${response.data.totalHits} images`);
+        const totalPages = response.data.totalHits / response.data.hits.length;
+        if (totalPages > 1) {
+          this.setState({
+            isLoadMore: true,
+          });
+        }
+      }
+      this.setState(({ images }) => {
         return {
           images: [...images, ...response.data.hits],
-          page: page + 1,
         };
       });
-      const loadedImages = images.length + response.data.hits.length;
+      const loadedImages = this.state.images.length + response.data.hits.length;
       if (loadedImages >= response.data.totalHits) {
         this.setState({ isLoadMore: false });
         toast.info('You viewed all pictures');
@@ -73,6 +67,12 @@ export class App extends Component {
     } finally {
       this.setState({ isLoading: false });
     }
+  };
+
+  loadMore = () => {
+    this.setState(({ page }) => {
+      return { page: page + 1 };
+    });
   };
 
   saveQuery = query => {
